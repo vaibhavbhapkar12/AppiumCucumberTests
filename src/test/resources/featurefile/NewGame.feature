@@ -20,7 +20,7 @@
 Feature: Check if user should be able to start new game
 
   @tag1
-  Scenario: Title of your scenario
+  Scenario: Validation of New game feature
     Given I sudoku android app is installed and open
     When 	I tap on the New Game option
     Then 	I can start new game by selecting the dificulty level
