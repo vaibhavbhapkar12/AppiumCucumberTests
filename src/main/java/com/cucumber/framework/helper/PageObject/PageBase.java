@@ -23,22 +23,28 @@ import com.cucumber.framework.helper.Logger.LoggerHelper;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.google.common.base.Function;
 
+import io.appium.java_client.MobileDriver;
+import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidDriver;
+
 /**
  * @author rahul.rathore
- *	
- *	29-Jul-2016
+ * 
+ *         29-Jul-2016
  *
  */
 @SuppressWarnings("rawtypes")
-public abstract class PageBase{
-	
+public abstract class PageBase {
+
 	private final Logger log = LoggerHelper.getLogger(PageBase.class);
 	private WebDriver driver;
-	
-	private By getFindByAnno(FindBy anno){
+
+	private AndroidDriver<WebElement> mDriver;
+
+	private By getFindByAnno(FindBy anno) {
 		log.info(anno);
 		switch (anno.how()) {
-		
+
 		case CLASS_NAME:
 			return new By.ByClassName(anno.using());
 		case CSS:
@@ -53,18 +59,16 @@ public abstract class PageBase{
 			return new By.ByPartialLinkText(anno.using());
 		case XPATH:
 			return new By.ByXPath(anno.using());
-		default :
+		default:
 			throw new IllegalArgumentException("Locator not Found : " + anno.how() + " : " + anno.using());
 		}
 	}
-	
-	protected By getElemetLocator(Object obj,String element) throws SecurityException,NoSuchFieldException {
+
+	protected By getElemetLocator(Object obj, String element) throws SecurityException, NoSuchFieldException {
 		Class childClass = obj.getClass();
 		By locator = null;
 		try {
-			locator = getFindByAnno(childClass.
-					 getDeclaredField(element).
-					 getAnnotation(FindBy.class));
+			locator = getFindByAnno(childClass.getDeclaredField(element).getAnnotation(FindBy.class));
 		} catch (SecurityException | NoSuchFieldException e) {
 			log.equals(e);
 			throw e;
@@ -72,17 +76,27 @@ public abstract class PageBase{
 		log.debug(locator);
 		return locator;
 	}
-	
-	public void waitForElement(WebElement element,int timeOutInSeconds) {
+
+	public void waitForElement(WebElement element, int timeOutInSeconds) {
 		WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
 		wait.ignoring(NoSuchElementException.class);
 		wait.ignoring(ElementNotVisibleException.class);
 		wait.ignoring(StaleElementReferenceException.class);
 		wait.ignoring(ElementNotFoundException.class);
-		wait.pollingEvery(250,TimeUnit.MILLISECONDS);
+		wait.pollingEvery(250, TimeUnit.MILLISECONDS);
 		wait.until(elementLocated(element));
 	}
-	
+
+	public void waitForMobileElement(MobileElement mElement, int timeOutInSeconds) {
+		WebDriverWait wait = new WebDriverWait(mDriver, timeOutInSeconds);
+		wait.ignoring(NoSuchElementException.class);
+		wait.ignoring(ElementNotVisibleException.class);
+		wait.ignoring(StaleElementReferenceException.class);
+		wait.ignoring(ElementNotFoundException.class);
+		wait.pollingEvery(250, TimeUnit.MILLISECONDS);
+		wait.until(elementLocated(mElement));
+	}
+
 	private Function<WebDriver, Boolean> elementLocated(final WebElement element) {
 		return new Function<WebDriver, Boolean>() {
 
@@ -93,20 +107,28 @@ public abstract class PageBase{
 			}
 		};
 	}
-	
+
 	public PageBase(WebDriver driver) {
-		if(driver == null)
+		if (driver == null)
 			throw new IllegalArgumentException("Driver object is null");
-		
+
 		PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
 		this.driver = driver;
 	}
-	
-	public boolean checkForTitle(String title){
+
+	public PageBase(AndroidDriver<WebElement> mDriver) {
+		if (mDriver == null)
+			throw new IllegalArgumentException("Driver object is null");
+
+		PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
+		this.mDriver = mDriver;
+	}
+
+	public boolean checkForTitle(String title) {
 		log.info(title);
-		if(title == null || title.isEmpty())
+		if (title == null || title.isEmpty())
 			throw new IllegalArgumentException(title);
 		return driver.getTitle().trim().contains(title);
 	}
-	
+
 }
