@@ -11,8 +11,8 @@
 			<class name="com.cucumber.framework.runner.LaptopFeatureRunner" />
 			<class name="com.cucumber.framework.runner.TabletFeatureRunner" />
 			<class name="com.cucumber.framework.runner.SearchWithFilterRunner" />
-			<class name="com.cucumber.framework.runner.NewGameRunner" />
-			<class name="com.cucumber.framework.runner.ThemeRunner" />
+			<!-- <class name="com.cucumber.framework.runner.NewGameRunner" />
+			<class name="com.cucumber.framework.runner.ThemeRunner" /> -->
 		</classes>
 	</test>
 </suite> 
