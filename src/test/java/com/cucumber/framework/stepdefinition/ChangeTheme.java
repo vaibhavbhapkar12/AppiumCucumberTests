@@ -1,7 +1,5 @@
 package com.cucumber.framework.stepdefinition;
 
-import com.cucumber.framework.helper.PageObject.homepage.HomePage;
-import com.cucumber.framework.helper.PageObject.itemsbag.ItemsBag;
 import com.cucumber.framework.helper.PageObject.themeoption.ThemeOptions;
 import com.cucumber.freamework.helper.pageObject.mainscreen.MainScreen;
 
@@ -17,6 +15,7 @@ public class ChangeTheme {
 	@Given("^I have installed and open Sudoku android app$")
 	public void i_have_installed_and_open_Sudoku_android_app() throws Throwable {
 		mScreen.installAndLaunchApplication();
+
 	}
 
 	@When("^I tap on the theme option$")
